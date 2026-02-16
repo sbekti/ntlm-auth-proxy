@@ -1,3 +1,3 @@
 module github.com/sbekti/ntlm-auth-proxy
 
-go 1.24.4
+go 1.26
