@@ -7,8 +7,7 @@ COPY go.mod ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o ntlm_auth_server ./cmd/server
-RUN CGO_ENABLED=0 GOOS=linux go build -o ntlm_auth_client ./cmd/client
+RUN CGO_ENABLED=0 GOOS=linux go build -o ntlm_auth_proxy .
 
 # Runtime Stage
 FROM ubuntu:24.04
@@ -22,8 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY --from=builder /app/ntlm_auth_server /usr/local/bin/ntlm_auth_server
-COPY --from=builder /app/ntlm_auth_client /usr/local/bin/ntlm_auth_client
+COPY --from=builder /app/ntlm_auth_proxy /usr/local/bin/ntlm_auth_proxy
 
 # Default to server
-ENTRYPOINT ["/usr/local/bin/ntlm_auth_server"]
+ENTRYPOINT ["/usr/local/bin/ntlm_auth_proxy"]
